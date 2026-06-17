@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/components/ui/toast";
 import { RequireAuth } from "@/components/layout/RequireAuth";
@@ -20,30 +20,36 @@ function Shell() {
       <Route
         path="/"
         element={
-          <AppLayout wsConnected={realtime.connected}>
-            <Dashboard
-              wsConnected={realtime.connected}
-              latest={realtime.latest}
-              settings={realtime.settings}
-              lastAlert={realtime.lastAlert}
-            />
-          </AppLayout>
+          <RequireAuth>
+            <AppLayout wsConnected={realtime.connected}>
+              <Dashboard
+                wsConnected={realtime.connected}
+                latest={realtime.latest}
+                settings={realtime.settings}
+                lastAlert={realtime.lastAlert}
+              />
+            </AppLayout>
+          </RequireAuth>
         }
       />
       <Route
         path="/history"
         element={
-          <AppLayout wsConnected={realtime.connected}>
-            <HistoryPage />
-          </AppLayout>
+          <RequireAuth>
+            <AppLayout wsConnected={realtime.connected}>
+              <HistoryPage />
+            </AppLayout>
+          </RequireAuth>
         }
       />
       <Route
         path="/alerts"
         element={
-          <AppLayout wsConnected={realtime.connected}>
-            <AlertsPage />
-          </AppLayout>
+          <RequireAuth>
+            <AppLayout wsConnected={realtime.connected}>
+              <AlertsPage />
+            </AppLayout>
+          </RequireAuth>
         }
       />
       <Route
@@ -56,6 +62,8 @@ function Shell() {
           </RequireAuth>
         }
       />
+      {/* Fallback: redirect route tak dikenal ke login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
